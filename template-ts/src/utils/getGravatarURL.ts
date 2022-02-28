@@ -7,6 +7,6 @@ interface GravatarOptions {
 }
 
 export function getGravatarURL({ email, size, defaultURL = 'identicon' }: GravatarOptions) {
-  let hash = md5(email.toLowerCase().trim())
-  return `https://www.gravatar.com/avatar/${hash}.jpg?s=${size}&d=${encodeURIComponent(defaultURL)}`
+	const hash = md5(email.toLowerCase().trim())
+	return `https://www.gravatar.com/avatar/${hash}.jpg?s=${size}&d=${encodeURIComponent(defaultURL)}`
 }

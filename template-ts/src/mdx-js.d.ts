@@ -1,5 +1,5 @@
 declare module '@mdx-js/react' {
-  export const MDXProvider: any;
+  export const MDXProvider: any
 }
 
 declare module '*.mdx' {

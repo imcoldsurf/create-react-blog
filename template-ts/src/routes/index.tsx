@@ -14,97 +14,97 @@ interface AppNavContext {
 
 // Split the posts into a list of chunks of the given size, and
 // then build index pages for each chunk.
-let chunks = chunk(posts, siteMetadata.indexPageSize)
-let chunkPagePairs = chunks.map((chunk, i) => [
-  '/' + (i + 1),
-  map<AppNavContext>(async (req, context) => {
-    // Don't load anything when just crawling
-    if (req.method === 'HEAD') {
-      return route()
-    }
+const chunks = chunk(posts, siteMetadata.indexPageSize)
+const chunkPagePairs = chunks.map((chunk, i) => [
+	'/' + (i + 1),
+	map<AppNavContext>(async (req, context) => {
+		// Don't load anything when just crawling
+		if (req.method === 'HEAD') {
+			return route()
+		}
 
-    // Get metadata for all pages on this page
-    let postRoutes = await Promise.all<Route>(
-      chunk.map(async post => {
-        let href = join(context.blogRoot, 'posts', post.slug)
-        return await resolve({
-          // If you want to show the page content on the index page, set
-          // this to 'GET' to be able to access it.
-          method: 'HEAD',
-          routes,
-          url: href,
-        })
-      }),
-    )
+		// Get metadata for all pages on this page
+		const postRoutes = await Promise.all<Route>(
+			chunk.map(async post => {
+				const href = join(context.blogRoot, 'posts', post.slug)
+				return await resolve({
+					// If you want to show the page content on the index page, set
+					// this to 'GET' to be able to access it.
+					method: 'HEAD',
+					routes,
+					url: href,
+				})
+			}),
+		)
 
-    // Only add a page number to the page title after the first index page.
-    let pageTitle = siteMetadata.title
-    if (i > 0) {
-      pageTitle += ` – page ${i + 1}`
-    }
+		// Only add a page number to the page title after the first index page.
+		let pageTitle = siteMetadata.title
+		if (i > 0) {
+			pageTitle += ` – page ${i + 1}`
+		}
 
-    return route({
-      title: pageTitle,
-      getView: () => (
-        <BlogIndexPage
-          blogRoot={context.blogRoot}
-          pageNumber={i + 1}
-          pageCount={chunks.length}
-          postRoutes={postRoutes}
-        />
-      ),
-    })
-  }),
+		return route({
+			title: pageTitle,
+			getView: () => (
+				<BlogIndexPage
+					blogRoot={context.blogRoot}
+					pageNumber={i + 1}
+					pageCount={chunks.length}
+					postRoutes={postRoutes}
+				/>
+			),
+		})
+	}),
 ])
 
 const routes = compose(
-  withContext((req, context): AppNavContext => ({
-    // By adding the point at which the blog was mounted to context, it
-    // makes it possible to easily scope all URLs to the blog root, thus
-    // making it possible to mount the entire route on a subdirectory.
-    blogRoot: req.mountpath || '/',
-    ...context,
-  })),
-  withView((req, context) => {
-    // Check if the current page is an index page by comparing the remaining
-    // portion of the URL's pathname with the index page paths.
-    let isViewingIndex = req.path === '/' || /^\/page\/\d+\/$/.test(req.path)
+	withContext((req, context): AppNavContext => ({
+		// By adding the point at which the blog was mounted to context, it
+		// makes it possible to easily scope all URLs to the blog root, thus
+		// making it possible to mount the entire route on a subdirectory.
+		blogRoot: req.mountpath || '/',
+		...context,
+	})),
+	withView((req, context) => {
+		// Check if the current page is an index page by comparing the remaining
+		// portion of the URL's pathname with the index page paths.
+		const isViewingIndex = req.path === '/' || /^\/page\/\d+\/$/.test(req.path)
 
-    // Wrap the current page's content with a React Context to pass global
-    // configuration to the blog's components.
-    return (
-      <BlogLayout
-        blogRoot={context.blogRoot}
-        isViewingIndex={isViewingIndex}
-      />
-    )
-  }),
-  mount({
-    // The blog's index pages go here. The first index page is mapped to the
-    // root URL, with a redirect from "/page/1". Subsequent index pages are
-    // mapped to "/page/n".
-    '/': chunkPagePairs.shift()[1],
-    '/page': mount({
-      '/1': redirect((req, context: AppNavContext) => context.blogRoot),
-      ...fromPairs(chunkPagePairs),
-    }),
+		// Wrap the current page's content with a React Context to pass global
+		// configuration to the blog's components.
+		return (
+			<BlogLayout
+				blogRoot={context.blogRoot}
+				isViewingIndex={isViewingIndex}
+			/>
+		)
+	}),
+	mount({
+		// The blog's index pages go here. The first index page is mapped to the
+		// root URL, with a redirect from "/page/1". Subsequent index pages are
+		// mapped to "/page/n".
+		'/': chunkPagePairs.shift()[1],
+		'/page': mount({
+			'/1': redirect((req, context: AppNavContext) => context.blogRoot),
+			...fromPairs(chunkPagePairs),
+		}),
 
-    // Put posts under "/posts", so that they can be wrapped with a
-    // "<BlogPostLayout />" that configures MDX and adds a post-specific layout.
-    '/posts': compose(
-      withView((req, context: AppNavContext) => <BlogPostLayout blogRoot={context.blogRoot} />),
-      mount(fromPairs(posts.map(post => ['/' + post.slug, post.getPage]))),
-    ),
+		// Put posts under "/posts", so that they can be wrapped with a
+		// "<BlogPostLayout />" that configures MDX and adds a post-specific layout.
+		'/posts': compose(
+			withView((req, context: AppNavContext) => <BlogPostLayout blogRoot={context.blogRoot} />),
+			mount(fromPairs(posts.map(post => ['/' + post.slug, post.getPage]))),
+		),
 
-    // Miscellaneous pages can be added directly to the root switch.
-    '/tags': lazy(() => import('./tags')),
-    '/about': lazy(() => import('./about')),
+		// Miscellaneous pages can be added directly to the root switch.
+		'/tags': lazy(() => import('./tags')),
+		'/about': lazy(() => import('./about')),
 
-    // Only the statically built copy of the RSS feed is intended to be opened,
-    // but the route is defined here so that the static renderer will pick it
-    // up.
-    '/rss': route(),
-  }),
+		// Only the statically built copy of the RSS feed is intended to be opened,
+		// but the route is defined here so that the static renderer will pick it
+		// up.
+		'/rss': route(),
+	}),
 )
 
 export default routes

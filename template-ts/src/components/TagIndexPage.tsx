@@ -13,20 +13,20 @@ interface TagIndexPage {
 }
 
 function TagIndexPage({ tags }: TagIndexPage) {
-  return (
-    <div className={styles.TagIndexPage}>
-      <h1>Tags</h1>
-      <ul>
-        {tags.map(tag => (
-          <li key={tag.href}>
-            <Link href={tag.href}>
-              {tag.name} ({tag.count})
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
+	return (
+		<div className={styles.TagIndexPage}>
+			<h1>Tags</h1>
+			<ul>
+				{tags.map(tag => (
+					<li key={tag.href}>
+						<Link href={tag.href}>
+							{tag.name} ({tag.count})
+						</Link>
+					</li>
+				))}
+			</ul>
+		</div>
+	)
 }
 
 export default TagIndexPage

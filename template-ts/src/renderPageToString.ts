@@ -6,11 +6,11 @@ import renderRSSFeedToString from './renderRSSFeedToString'
  * to produce its statically rendered HTML.
  */
 async function renderPageToString(props) {
-  if (props.url.pathname === '/rss') {
-    return await renderRSSFeedToString(props)
-  }
+	if (props.url.pathname === '/rss') {
+		return await renderRSSFeedToString(props)
+	}
 
-  return renderReactPageToString(props)
+	return renderReactPageToString(props)
 }
 
 export default renderPageToString

@@ -7,11 +7,11 @@ import styles from './NotFoundPage.module.css'
 // by <NotFoundBoundary>. To see the error rendered by this function,
 // you'll just need to close the error overlay with the "x" at the top right.
 function NotFoundPage() {
-  return (
-    <div className={styles.NotFound}>
-      <h1>404 - Not Found</h1>
-    </div>
-  )
+	return (
+		<div className={styles.NotFound}>
+			<h1>404 - Not Found</h1>
+		</div>
+	)
 }
 
 export default NotFoundPage

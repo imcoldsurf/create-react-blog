@@ -8,16 +8,16 @@ interface LoadingIndicatorProps {
 }
 
 function LoadingIndicator({ active, className, style }: LoadingIndicatorProps) {
-  return (
-    <div
-      className={`
+	return (
+		<div
+			className={`
         ${styles.LoadingIndicator}
         ${active ? styles.active : ''}
         ${className}
       `}
-      style={style}
-    />
-  )
+			style={style}
+		/>
+	)
 }
 
 export default LoadingIndicator

@@ -7,33 +7,33 @@ interface BioProps {
 }
 
 function Bio(props: BioProps) {
-  let photoURL = getGravatarURL({
-    email: "test1@example.com",
-    size: 56,
-  })
+	const photoURL = getGravatarURL({
+		email: 'test1@example.com',
+		size: 56,
+	})
 
-  return (
-    <div
-      className={`
+	return (
+		<div
+			className={`
       ${styles.Bio}
       ${props.className || ''}
     `}>
-      <img src={photoURL} alt="Me" />
-      <p>
+			<img src={photoURL} alt="Me" />
+			<p>
         Create a blog with a single command, by{' '}
-        <a href="https://twitter.com/james_k_nelson/">James K Nelson</a>.
-        <br />
+				<a href="https://twitter.com/james_k_nelson/">James K Nelson</a>.
+				<br />
         Themed after Gatsby's blog starter and Dan Abramov's{' '}
-        <a href="https://overreacted.io/">overreacted.io</a>.<br />
+				<a href="https://overreacted.io/">overreacted.io</a>.<br />
         Based on{' '}
-        <a href="https://facebook.github.io/create-react-app/">
+				<a href="https://facebook.github.io/create-react-app/">
           create-react-app
-        </a>
+				</a>
         , <a href="https://mdxjs.com/">MDX</a>, and{' '}
-        <a href="https://frontarm.com/navi/">Navi</a>.
-      </p>
-    </div>
-  )
+				<a href="https://frontarm.com/navi/">Navi</a>.
+			</p>
+		</div>
+	)
 }
 
 export default Bio
