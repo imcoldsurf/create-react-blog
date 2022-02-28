@@ -44,6 +44,9 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "eslint": "^8.10.0"
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "eslint": "^8.10.0",
+    "eslint-plugin-react": "^7.29.2"
   }
 }
